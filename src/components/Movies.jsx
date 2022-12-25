@@ -31,7 +31,7 @@ class Movies extends Component {
               <th>Genre</th>
               <th>Stock</th>
               <th>Rate</th>
-              <th>DELETE OPTION</th>
+              <th></th>
             </tr>
           </thead>
           <tbody className="">
