@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
+import Like from "./common/Like";
 
 class Movies extends Component {
   state = {
@@ -9,6 +10,13 @@ class Movies extends Component {
     // we are going to create valiable we pass all the movies we have in state except movie we have passed
     const movies = this.state.movies.filter((m) => m._id !== movie._id);
     this.setState({ movies }); //we are wrapping our state with new obj
+  };
+  likeHandler = (movie) => {
+    const movies = [...this.state.movies];
+    const index = movies.indexOf(movie);
+    movies[index] = { ...movies[index] };
+    movies[index].liked = !movies[index].liked;
+    this.setState({ movies })
   };
   render() {
     const { length: movieNumber } = this.state.movies;
@@ -31,6 +39,7 @@ class Movies extends Component {
               <th>Genre</th>
               <th>Stock</th>
               <th>Rate</th>
+              <th>LIKE</th>
               <th></th>
             </tr>
           </thead>
@@ -41,6 +50,12 @@ class Movies extends Component {
                 <td>{movie.genre.name}</td>
                 <td>{movie.numberInStock}</td>
                 <td>{movie.dailyRentalRate}</td>
+                <td>
+                  <Like
+                    liked={movie.liked}
+                    onToggleLike={() => this.likeHandler(movie)}
+                  />
+                </td>
                 <td>
                   <button
                     onClick={() => this.deleteHandler(movie)}
