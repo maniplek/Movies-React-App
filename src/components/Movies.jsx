@@ -40,7 +40,7 @@ class Movies extends Component {
               <th>Stock</th>
               <th>Rate</th>
               <th>LIKE</th>
-              <th></th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody className="">
