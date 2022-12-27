@@ -1,25 +1,37 @@
 import { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
 import Like from "./common/Like";
+import Pagination from "./common/pagination";
 
 class Movies extends Component {
   state = {
     movies: getMovies(),
+    currentPage: 1,
+    pageSize: 3,
   };
   deleteHandler = (movie) => {
     // we are going to create valiable we pass all the movies we have in state except movie we have passed
     const movies = this.state.movies.filter((m) => m._id !== movie._id);
     this.setState({ movies }); //we are wrapping our state with new obj
   };
+
   likeHandler = (movie) => {
     const movies = [...this.state.movies];
     const index = movies.indexOf(movie);
     movies[index] = { ...movies[index] };
     movies[index].liked = !movies[index].liked;
-    this.setState({ movies })
+    this.setState({ movies });
   };
+
+  handlePageChange = (page) =>{
+    // console.log("page......", page)
+    this.setState({ currentPage : page})// we are taking current page to page we clicked
+  }
+
   render() {
     const { length: movieNumber } = this.state.movies;
+    const { pageSize, currentPage } = this.state;
+
     if (movieNumber === 0)
       return (
         <p className="text-justify text-uppercase font-weight-bold">
@@ -68,6 +80,12 @@ class Movies extends Component {
             ))}
           </tbody>
         </table>
+        <Pagination
+          itemsCount={this.state.movies.length}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={this.handlePageChange}
+        />
       </div>
     );
   }
