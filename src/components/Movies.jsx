@@ -50,6 +50,28 @@ class Movies extends Component {
     this.setState({ sortColumn })
   }
 
+  getPageData = () =>{
+    const {
+      pageSize,
+      currentPage,
+      selectedGenre,
+      movies: allMovies,
+      sortColumn
+    } = this.state;
+
+    const filtered =
+    selectedGenre && selectedGenre._id
+      ? allMovies.filter((m) => m.genre._id === selectedGenre._id)
+      : allMovies;
+
+  const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]) // sorting using lodash with arg 1st filtered movies and array of property names  and the sort order 
+
+  const movies = paginate(sorted, currentPage, pageSize);
+  /** We have to make another movie array of each page with allmovieS(9) * currentPage(1)* pageSize(4)*/
+   return {totalCount: filtered.length, data: movies};
+
+  }
+
   render() {
     const { length: movieNumber } = this.state.movies;
     const {
@@ -67,20 +89,11 @@ class Movies extends Component {
         </p>
       );
 
-    const filtered =
-      selectedGenre && selectedGenre._id
-        ? allMovies.filter((m) => m.genre._id === selectedGenre._id)
-        : allMovies;
-
-    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]) // sorting using lodash with arg 1st filtered movies and array of property names  and the sort order 
-
-    const movies = paginate(sorted, currentPage, pageSize);
-    /** We have to make another movie array of each page with allmovieS(9)
-     * currentPage(1)
-     * pageSize(4)
-     */
-
+      const {totalCount, data: movies} = this.getPageData()
+   
     return (
+
+
       <div className="row">
         <div className="col-3">
           <ListGroup
@@ -92,7 +105,7 @@ class Movies extends Component {
 
         <div className="col">
           <h2 className="text-justify text-uppercase font-weight-bold">
-            Showing {filtered.length} movies in the database
+            Showing {totalCount} movies in the database
           </h2>
           <MoviesTable
             movies={movies}
@@ -103,7 +116,7 @@ class Movies extends Component {
           />
 
           <Pagination
-            itemsCount={filtered.length}
+            itemsCount={totalCount}
             pageSize={pageSize}
             currentPage={currentPage}
             onPageChange={this.handlePageChange}
