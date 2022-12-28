@@ -1,31 +1,52 @@
 import { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
 import Like from "./common/Like";
+import Pagination from "./common/pagination";
+import { paginate } from "../utils/paginate";
 
 class Movies extends Component {
   state = {
     movies: getMovies(),
+    currentPage: 1,
+    pageSize: 4,
   };
+
   deleteHandler = (movie) => {
     // we are going to create valiable we pass all the movies we have in state except movie we have passed
     const movies = this.state.movies.filter((m) => m._id !== movie._id);
     this.setState({ movies }); //we are wrapping our state with new obj
   };
+
   likeHandler = (movie) => {
     const movies = [...this.state.movies];
     const index = movies.indexOf(movie);
     movies[index] = { ...movies[index] };
     movies[index].liked = !movies[index].liked;
-    this.setState({ movies })
+    this.setState({ movies });
   };
+
+  handlePageChange = (page) => {
+    // console.log("page......", page)
+    this.setState({ currentPage: page }); // we are taking current page to page we clicked
+  };
+
   render() {
     const { length: movieNumber } = this.state.movies;
+    const { pageSize, currentPage, movies: allMovies } = this.state;
+
     if (movieNumber === 0)
       return (
         <p className="text-justify text-uppercase font-weight-bold">
           There is no movie in Database
         </p>
       );
+
+    const movies = paginate(allMovies, currentPage, pageSize);
+    /** We have to make another movie array of each page with allmovieS(9)
+     * currentPage(1)
+     * pageSize(4)
+     */
+
     return (
       <div>
         <h2 className="text-justify text-uppercase font-weight-bold">
@@ -44,7 +65,7 @@ class Movies extends Component {
             </tr>
           </thead>
           <tbody className="">
-            {this.state.movies.map((movie) => (
+            {movies.map((movie) => (
               <tr key={movie._id}>
                 <td>{movie.title}</td>
                 <td>{movie.genre.name}</td>
@@ -68,6 +89,13 @@ class Movies extends Component {
             ))}
           </tbody>
         </table>
+        
+        <Pagination
+          itemsCount={this.state.movies.length}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={this.handlePageChange}
+        />
       </div>
     );
   }
