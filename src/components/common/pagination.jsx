@@ -7,7 +7,7 @@ const Pagination = (props) => {
   const { itemsCount, pageSize, currentPage, onPageChange } = props; //number of item and pagesize we have in our state
 
   const pagesCount = Math.ceil(itemsCount / pageSize); //we are getting number of items that can be on one page/ converting to integer so that if its one we dont see pagination 
-  
+
   if (pagesCount === 1) return null;
   const pages = _.range(1, pagesCount + 1); // here we are converting page account into array so that each array value takes an element
 
@@ -16,7 +16,7 @@ const Pagination = (props) => {
       <ul className="pagination">
         {pages.map((page) => (
           <li key={page} className={page === currentPage ? "page-item active" : "page-item"} >
-            <a className="page-link" onClick={() => onPageChange(page)}>
+            <a className="page-link" href="#" onClick={() => onPageChange(page)}>
               {page}
             </a>
           </li>
