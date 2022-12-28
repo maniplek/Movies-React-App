@@ -1,10 +1,12 @@
 import { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
-import Like from "./common/Like";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import ListGroup from "./common/listGroup";
 import { getGenres } from "../services/fakeGenreService";
+import _ from 'lodash';
+
+import MoviesTable from "./moviesTable";
 
 class Movies extends Component {
   state = {
@@ -12,10 +14,11 @@ class Movies extends Component {
     genres: [],
     currentPage: 1,
     pageSize: 4,
+    sortColumn: { path: 'title', order: 'asc'} // the column to be sorted and the order we want 
   };
 
   componentDidMount() {
-    const genres = [{ name: "All Genres" }, ...getGenres()]; // in genre we only have 3, here we all adding one of all genres then we access it down in our list of genres
+    const genres = [ { _id:"",name: "All Genres" }, ...getGenres()]; // in genre we only have 3, here we all adding one of all genres then we access it down in our list of genres
     this.setState({ movies: getMovies(), genres }); //calling backend services and this method will be called when the instance of this method is rendered in the DOM
   }
 
@@ -42,9 +45,20 @@ class Movies extends Component {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
 
+  handleSort = sortColumn =>{
+   
+    this.setState({ sortColumn })
+  }
+
   render() {
     const { length: movieNumber } = this.state.movies;
-    const {pageSize, currentPage, selectedGenre, movies: allMovies} = this.state;
+    const {
+      pageSize,
+      currentPage,
+      selectedGenre,
+      movies: allMovies,
+      sortColumn
+    } = this.state;
 
     if (movieNumber === 0)
       return (
@@ -58,7 +72,9 @@ class Movies extends Component {
         ? allMovies.filter((m) => m.genre._id === selectedGenre._id)
         : allMovies;
 
-    const movies = paginate(filtered, currentPage, pageSize);
+    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]) // sorting using lodash with arg 1st filtered movies and array of property names  and the sort order 
+
+    const movies = paginate(sorted, currentPage, pageSize);
     /** We have to make another movie array of each page with allmovieS(9)
      * currentPage(1)
      * pageSize(4)
@@ -73,47 +89,18 @@ class Movies extends Component {
             onItemSelect={this.handleGenreSelect}
           />
         </div>
+
         <div className="col">
           <h2 className="text-justify text-uppercase font-weight-bold">
             Showing {filtered.length} movies in the database
           </h2>
-
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Tittle</th>
-                <th>Genre</th>
-                <th>Stock</th>
-                <th>Rate</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody className="">
-              {movies.map((movie) => (
-                <tr key={movie._id}>
-                  <td>{movie.title}</td>
-                  <td>{movie.genre.name}</td>
-                  <td>{movie.numberInStock}</td>
-                  <td>{movie.dailyRentalRate}</td>
-                  <td>
-                    <Like
-                      liked={movie.liked}
-                      onToggleLike={() => this.likeHandler(movie)}
-                    />
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => this.deleteHandler(movie)}
-                      className="btn btn-danger btn-sm"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <MoviesTable
+            movies={movies}
+            sortColumn={sortColumn}
+            onLike={this.likeHandler}
+            onDelete={this.deleteHandler}
+            onSort={this.handleSort}
+          />
 
           <Pagination
             itemsCount={filtered.length}
