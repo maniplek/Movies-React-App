@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import _ from "lodash"; // optimized version of underscore package
 import PropTypes from 'prop-types'
@@ -16,7 +17,7 @@ const Pagination = (props) => {
       <ul className="pagination">
         {pages.map((page) => (
           <li key={page} className={page === currentPage ? "page-item active" : "page-item"} >
-            <a className="page-link" href="#" onClick={() => onPageChange(page)}>
+            <a className="page-link" onClick={() => onPageChange(page)}>
               {page}
             </a>
           </li>
