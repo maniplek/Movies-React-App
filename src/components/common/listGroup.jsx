@@ -1,5 +1,5 @@
 const ListGroup = (props) => {
-  const { items, textProperty,valueProperty ,onItemSelect, selectedItem } =
+  const { items, textProperty, valueProperty, onItemSelect, selectedItem } =
     props;
 
   return (
