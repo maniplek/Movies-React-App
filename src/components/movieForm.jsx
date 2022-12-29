@@ -6,7 +6,7 @@ const MovieForm = ({ match,history }) => {
              <h2>Movie Form {match.params.id}</h2>
              <button
              className='btn btn-primary'
-             onClick={()=> history.pushState("/movies")}>
+             onClick={()=> history.push("/movies")}>
                 save
              </button>
         </div>
