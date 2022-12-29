@@ -24,7 +24,7 @@ class Movies extends Component {
   }
 
   deleteHandler = (movie) => {
-    // we are going to create valiable we pass all the movies we have in state except movie we have passed
+    // we are going to create valiable we pass all the movies we have in state 
     const movies = this.state.movies.filter((m) => m._id !== movie._id);
     this.setState({ movies }); //we are wrapping our state with new obj
   };
@@ -38,7 +38,6 @@ class Movies extends Component {
   };
 
   handlePageChange = (page) => {
-    // console.log("page......", page)
     this.setState({ currentPage: page }); // we are taking current page to page we clicked
   };
 
@@ -107,10 +106,10 @@ class Movies extends Component {
           />
 
           <Pagination
-            itemsCount={totalCount}
-            pageSize={pageSize}
-            currentPage={currentPage}
-            onPageChange={this.handlePageChange}
+            itemsCount={totalCount}// total number of filtered
+            pageSize={pageSize} // number of data to put on a page
+            currentPage={currentPage} // the page we are on now
+            onPageChange={this.handlePageChange} // function to change page 
           />
         </div>
       </div>
