@@ -80,7 +80,9 @@ class LoginForm extends Component {
             error={errors.password}
           />
 
-          <button className="button btn btn-primary mt-3">Login</button>
+          <button 
+          disabled={this.validate()} // as we know validate function will return null or an object with or more errors so if it returns null, null is false similar to pass false in fuction but if it return an object that men an error thats truethy here
+          className="button btn btn-primary mt-3">Login</button>
         </form>
       </div>
     );
