@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Joi from "joi-browser";
+import Input from "./input";
 
 class Form extends Component {
   state = {
@@ -30,7 +31,7 @@ class Form extends Component {
     const errors = this.validate();
     this.setState({ errors: errors || {} }); // this means error shhould always have an object that's why we added OR {}
     if (errors) return null;
-    
+
     this.doSubmit();
   };
 
@@ -46,7 +47,30 @@ class Form extends Component {
     this.setState({ data, errors });
   };
 
+  renderButton(label) {
+    return (
+      <button
+        disabled={this.validate()}
+        className="button btn btn-primary mt-3"
+      >
+        {label}
+      </button>
+    );
+  }
 
+  renderInput(name, label, type='text') {
+    const { data, errors } = this.state;
+    return (
+      <Input
+        type={type}
+        name={name}
+        value={data[name]}
+        label={label}
+        onChange={this.handleChange}
+        error={errors[name]}
+      />
+    );
+  }
 }
 
 export default Form;
