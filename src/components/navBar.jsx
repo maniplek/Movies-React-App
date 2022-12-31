@@ -24,7 +24,7 @@ const NavBar = () => {
             Movies
           </NavLink>
           <NavLink className="nav-item nav-link" to="/customers">
-            Customers
+            Customer
           </NavLink>
           <NavLink className="nav-item nav-link" to="/rentals">
             Rentals
