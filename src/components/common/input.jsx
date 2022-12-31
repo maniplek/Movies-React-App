@@ -10,7 +10,7 @@ const Input = ({ name, label, error, ...rest }) => {
         {...rest}
         name={name}
         id={name}
-        className="form-control form-control-lg w-50 mt-2"
+        className="form-control form-control-sm w-50 mt-2"
       />
       {/**this will occar/ will be displayed when there is an error*/}
       {error && <div className="alert alert-danger w-50">{error}</div>}
