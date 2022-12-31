@@ -9,6 +9,8 @@ import _ from "lodash";
 
 import MoviesTable from "./moviesTable";
 
+import { Link } from "react-router-dom";
+
 class Movies extends Component {
   state = {
     movies: [], // we should initialize this properties to [] it's becouse it will get some time to get data from server
@@ -24,7 +26,7 @@ class Movies extends Component {
   }
 
   deleteHandler = (movie) => {
-    // we are going to create valiable we pass all the movies we have in state 
+    // we are going to create valiable we pass all the movies we have in state
     const movies = this.state.movies.filter((m) => m._id !== movie._id);
     this.setState({ movies }); //we are wrapping our state with new obj
   };
@@ -94,6 +96,13 @@ class Movies extends Component {
         </div>
 
         <div className="col">
+          <Link
+            to="/movies/new"
+            className="btn btn-primary"
+            style={{ marginBottom: 20 }}
+          >
+            New Movie
+          </Link>
           <h2 className="text-justify text-uppercase font-weight-bold">
             Showing {totalCount} movies in the database
           </h2>
@@ -106,10 +115,10 @@ class Movies extends Component {
           />
 
           <Pagination
-            itemsCount={totalCount}// total number of filtered
+            itemsCount={totalCount} // total number of filtered
             pageSize={pageSize} // number of data to put on a page
             currentPage={currentPage} // the page we are on now
-            onPageChange={this.handlePageChange} // function to change page 
+            onPageChange={this.handlePageChange} // function to change page
           />
         </div>
       </div>
