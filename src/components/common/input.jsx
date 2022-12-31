@@ -1,20 +1,19 @@
 import React from "react";
 
-const Input = ({ name, label, value, onChange, error }) => {
+const Input = ({ name, label, error, ...rest }) => {
+  //...rest operator helps us to add any other type we want instead of exctracting
   return (
     <div className="form-group  mt-3">
       {label}
       <label htmlFor={name}></label>
       <input
-        value={value}
-        onChange={onChange}
-        id={name}
+        {...rest}
         name={name}
-        type="text"
-        className="form-control form-control-lg w-50 mt-2"
+        id={name}
+        className="form-control form-control-sm w-50 mt-2"
       />
       {/**this will occar/ will be displayed when there is an error*/}
-      {error && <div className="alert alert-danger w-50">{error}</div>} 
+      {error && <div className="alert alert-danger w-50">{error}</div>}
     </div>
   );
 };
