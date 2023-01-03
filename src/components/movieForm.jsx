@@ -2,8 +2,7 @@ import React from "react";
 import Form from "./common/form";
 import Joi from "joi-browser";
 import { getGenres } from "./../services/fakeGenreService";
-import { getMovie,saveMovie } from "../services/fakeMovieService";
-
+import { getMovie, saveMovie } from "../services/fakeMovieService";
 
 class NewMovieForm extends Form {
   state = {
@@ -50,7 +49,7 @@ class NewMovieForm extends Form {
     saveMovie(this.state.data);
 
     this.props.history.push("/movies");
-  }; 
+  };
 
   render() {
     return (
