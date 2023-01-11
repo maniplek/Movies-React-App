@@ -1,9 +1,10 @@
 import { Component } from "react";
-import { getMovies } from "../services/fakeMovieService";
+import { deleteMovie, getMovies } from "../services/movieServise";
+import { toast } from "react-toastify";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import ListGroup from "./common/listGroup";
-import { getGenres } from "../services/fakeGenreService";
+import { getGenres } from "../services/genreService";
 import _ from "lodash";
 
 import MoviesTable from "./moviesTable";
@@ -22,15 +23,28 @@ class Movies extends Component {
     sortColumn: { path: "title", order: "asc" }, // the column to be sorted and the order we want
   };
 
-  componentDidMount() {
-    const genres = [{ _id: "", name: "All Genres" }, ...getGenres()]; // in genre we only have 3, here we all adding one of all genres then we access it down in our list of genres
-    this.setState({ movies: getMovies(), genres }); //calling backend services and this method will be called when the instance of this method is rendered in the DOM
+  async componentDidMount() {
+    const { data } = await getGenres();
+    const genres = [{ _id: "", name: "All Genres" }, ...data]; // in genre we only have 3, here we all adding one of all genres then we access it down in our list of genres
+
+    const { data: movies } = await getMovies();
+    this.setState({ movies, genres }); //calling backend services and this method will be called when the instance of this method is rendered in the DOM
   }
 
-  deleteHandler = (movie) => {
+  deleteHandler = async (movie) => {
     // we are going to create valiable we pass all the movies we have in state
-    const movies = this.state.movies.filter((m) => m._id !== movie._id);
+    const originalMovies = this.state.movies;
+    const movies = originalMovies.filter((m) => m._id !== movie._id);
     this.setState({ movies }); //we are wrapping our state with new obj
+
+    try {
+      await deleteMovie(movie._id);
+    } catch (ex) {
+      if(ex.response && ex.response.status === 404)
+        toast.error('This Error has already been deleted')
+      
+      this.setState({movies: originalMovies });
+    }
   };
 
   likeHandler = (movie) => {
@@ -49,7 +63,7 @@ class Movies extends Component {
     this.setState({ selectedGenre: genre, searchQuery: "", currentPage: 1 });
   };
 
-  handleSearch = query => {
+  handleSearch = (query) => {
     this.setState({ searchQuery: query, selectedGenre: null, currentPage: 1 });
   };
 
@@ -116,7 +130,7 @@ class Movies extends Component {
           <h2 className="text-justify text-uppercase font-weight-bold">
             Showing {totalCount} movies in the database
           </h2>
-          <SearchBox onChange={this.handleSearch} />  {/* value={searchQuery} */}
+          <SearchBox onChange={this.handleSearch} /> {/* value={searchQuery} */}
           <MoviesTable
             movies={movies}
             sortColumn={sortColumn}
@@ -124,7 +138,6 @@ class Movies extends Component {
             onDelete={this.deleteHandler}
             onSort={this.handleSort}
           />
-
           <Pagination
             itemsCount={totalCount} // total number of filtered
             pageSize={pageSize} // number of data to put on a page
